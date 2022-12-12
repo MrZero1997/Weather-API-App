@@ -1,12 +1,12 @@
 /* Global Variables */
-let apiKey = ",&appid=d6e952ec3cadf94b66ac78b4d0d4b9e0";
-let baseURL = "http://api.openweathermap.org/data/2.5/forecast?zip="
+const apiKey = ",&appid=d6e952ec3cadf94b66ac78b4d0d4b9e0&units=imperial";
+const baseURL = "http://api.openweathermap.org/data/2.5/forecast?zip="
 const generate = document.getElementById("generate");
 const server = "http://127.0.0.1:8080";
 
 // Create a new date instance dynamically with JS
-let d = new Date();
-let newDate = d.getMonth()+1 +'.'+ d.getDate()+'.'+ d.getFullYear();
+let date = new Date();
+let newDate = date.getMonth()+1 +'.'+ date.getDate()+'.'+ date.getFullYear();
 
 //async function that uses GET method to make a request to openweathermap API
 const getWeather = async (url , zip , key)=>{
@@ -24,7 +24,7 @@ const getWeather = async (url , zip , key)=>{
 const postWeather = async (url= "", data = {})=>{
   const response = await fetch(url,{
     method :"POST" ,
-    //credentials : "same-origin",
+    credentials : "same-origin",
     headers : {
       "Content-Type" : "application/json",
     },
@@ -58,14 +58,15 @@ const postWeather = async (url= "", data = {})=>{
 // take an action when the button with "generate" text is clicked
 generate.addEventListener("click" , clickAction)
 
-function clickAction(e){
+ function clickAction(e){
   const zipCode = document.getElementById("zip").value;
 
   //chain promises
-  getWeather (baseURL, zipCode , apiKey).then((allData) =>{
+ getWeather (baseURL, zipCode , apiKey).then((allData) =>{
+   console.log(allData);
   const temp = allData.list[0].main.temp;
   const data = {temp : temp , date : newDate , userResponse : document.getElementById("feelings").value};
-  postWeather(server + '/addData' , data)
+  postWeather('/addData' , data)
   console.log(data);
   updateUI();
 })
